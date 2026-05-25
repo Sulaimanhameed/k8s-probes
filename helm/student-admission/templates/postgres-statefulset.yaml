@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "student-admission.postgresName" . }}
+  labels:
+    {{- include "student-admission.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "student-admission.postgresServiceName" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "student-admission.postgresName" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "student-admission.postgresName" . }}
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.postgres.port }}
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-postgres-secret
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}

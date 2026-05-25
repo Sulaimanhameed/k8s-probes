@@ -1,0 +1,12 @@
+apiVersion: v2
+name: student-admission
+description: Student Admission Portal with Spring Boot and PostgreSQL
+type: application
+version: 1.0.0
+appVersion: "2.0.0"
+keywords:
+  - spring-boot
+  - postgresql
+  - admission
+maintainers:
+  - name: catninjauser

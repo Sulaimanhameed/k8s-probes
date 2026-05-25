@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: hello-app-config
 data:
-  DB_URL: "jdbc:postgresql://postgres:5432/hellodb"
+  DB_URL: "jdbc:postgresql://postgres-service:5432/hellodb"
   DB_USERNAME: "postgres"
 ---
 apiVersion: apps/v1
@@ -24,8 +24,8 @@ spec:
     spec:
       containers:
         - name: hello-spring
-          image: java-app:1
-          imagePullPolicy: IfNotPresent
+          image: catninjauser/helloapps-java:3.0.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
